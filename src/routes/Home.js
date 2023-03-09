@@ -9,6 +9,7 @@ function Home({ toDos, addToDo }) {
   }
   function onSubmit(e) {
     e.preventDefault();
+    addToDo(text);
     setText("");
   }
   return (
