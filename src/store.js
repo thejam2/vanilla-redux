@@ -1,4 +1,4 @@
-import { createAction, createReducer } from "@reduxjs/toolkit";
+import { configureStore, createAction, createReducer } from "@reduxjs/toolkit";
 import { createStore } from "redux";
 
 const ADD = "ADD";
@@ -45,7 +45,7 @@ const reducer = createReducer([...localData], {
     
 });
 
-const store = createStore(reducer);
+const store = configureStore({reducer});
 
 export const actionCreators = {
   addToDo,
