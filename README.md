@@ -1,70 +1,73 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+const countModifier = (count = 0, action) => {
+  return count;
+};
+const store = createStore(countModifier);
 
-## Available Scripts
+Store는 data를 저장하는 곳
+CreateStore는 reducer를 요구함.
+Reducer는 data를 modify 해주는 함수로 reducer가 return하는 것은 application에 있는 data가 됨.
+store.getState();
 
-In the project directory, you can run:
+Action : redux에서 function을 부를 때 쓰는 두 번째 parameter 혹은 argument으로 reducer와 소통하기 위한 방법
+store를 수정하는 유일한 방법은 action을 보내는것
+Reducer에게 Action을 보내는 방법 : store.dispatch({key: value});
 
-### `npm start`
+Subscribe : store 안에 있는 변화 감지
+store.subscribe(func); // store안의 변화를 감지하면 func 실행
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+state를 mutate하면 안됨
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+react redux
+컴포넌트 export할때 connect 사용
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
+connect 첫번쨰함수는 state 가져옴
+connect 두번쨰함수는 dispatch기능
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+redux쉽게 -> redux toolkit
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+createAction()
+const addToDo = createAction("ADD");	//()안의 ADD는 type
+const deleteToDo = createAction("DELETE");	//
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+const reducer = (state = [], action) => {
+  switch (action.type) {	//
+    case addToDo.type:
+      return [ ...state,{ text: action.payload, id: id }];		//
+    case deleteToDo.type:
+      return state.filter(toDo => toDo.id !== action.payload);
+    default:
+	
+  }
+};
 
-### `npm run eject`
+createReducer	//createReducer에서는 state mutate 가능 단 리던안해야함 , switch도 필요 없음
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+const reducer = createReducer([...localData], {
+  [addToDo]: (state, action) => {	//{}있고 리턴없음
+    state.push({ text: action.payload, id: Date.now() });	//push로 mutate하지만 뒤에서 immer가 작업
+  },
+  [deleteToDo]: (state, action) => state.filter(toDo => toDo.id !== action.payload)	//{}없으므로 바로리턴
+});
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+createSlice //초기 state, reducer 함수의 객체, "slice 이름"을 받아 리듀서 및 state에 해당하는 action crator와 action type을 자동으로 생성하는 함수입니다.
+내부적으로는 createAction 및 createReducer를 사용하므로 Immer를 사용하여 "mutating" 불변 업데이트를 작성할 수도 있습니다.
+const counterSlice = createSlice({
+  name: 'counter',	//명
+  initialState,		//초기값
+  reducers: {		//reducer
+    increment(state) {
+      state.value++
+    },
+    decrement(state) {
+      state.value--
+    },
+    incrementByAmount(state, action: PayloadAction<number>) {
+      state.value += action.payload
+    },
+  },
+})
