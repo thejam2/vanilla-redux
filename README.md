@@ -1,4 +1,4 @@
-Redux 
+Redux 공부
 
 const countModifier = (count = 0, action) => {
   return count;
